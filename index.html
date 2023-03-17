@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>calcolatrice</title>
+</head>
+<body>
+    <div class="container">
+        <div class="calcolatrice">
+            <div class="partesopra">
+                <div class="display">
+                    <div class="displayUp">
+                        
+                    </div>
+                    <div class="displayDown">
+                    </div>
+                </div>
+            </div>
+            <div class="partesotto">
+                <div class="tastiera">
+                    <div class="item item1">1</div>
+                    <div class="item item2">2</div>
+                    <div class="item item3">3</div>
+                    <div class="item item4">+</div>
+                    <div class="item item5">4</div>
+                    <div class="item item6">5</div>
+                    <div class="item item7">6</div>
+                    <div class="item item8">−</div>
+                    <div class="item item9">7</div>
+                    <div class="item item10">8</div>
+                    <div class="item item11">9</div>
+                    <div class="item item12">×</div>
+                    <div class="item item13">0</div>
+                    <div class="item item14">.</div>
+                    <div class="item item15">⌫</div>
+                    <div class="item item16">÷</div>
+                    <div class="item item17">=</div>
+                    <div class="item item18">AC</div>
+                </div>
+                
+            </div>
+        </div>
+        
+    </div>
+    <script>
+        let displayUp = document.querySelector('.displayUp');
+        displayUp.innerHTML = '';                              //seleziono la parte superiore del display
+        let displayDown = document.querySelector('.displayDown');
+        let nuovoDisplayDown = '';
+        let tasti = document.querySelectorAll('.item');
+        let numeri = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0'];
+        let punto = '.';
+        let operatori =['+', '×', '−', '÷'];
+        let nuovoDisplayUp = '';
+        let lastChar;
+        let firstChar;
+        let cePunto;
+        let primo = '+';
+        let indiceOperatore;
+        let primoNumero;
+        let secondoNumero = undefined;
+        let operatore = '';
+        let risultato;
+        let lengthDisplayUp;
+        let arrayDisplayUp;
+
+        tasti.forEach((tasto) => {
+            let contenutoTasto = tasto.textContent;
+
+            tasto.addEventListener('click',() => {
+
+                lengthDisplayUp = nuovoDisplayUp.length;
+
+                if (operatori.includes(contenutoTasto) && operatori.every(elemento => !lastChar.includes(elemento)) && primo !== '+') {
+                    if (nuovoDisplayUp.includes('+') || nuovoDisplayUp.includes('−') || nuovoDisplayUp.includes('÷') || nuovoDisplayUp.includes('×')) {
+                        console.log('sono entrato');
+                        
+                    }
+                    updateDisplay();
+                    indiceOperatore = nuovoDisplayUp.indexOf(contenutoTasto);       //OPERATORE
+                    operatore = contenutoTasto;
+                    
+                }
+                if (contenutoTasto == 'AC') {
+                    nuovoDisplayUp = '';
+                    displayUp.textContent = nuovoDisplayUp;
+                    nuovoDisplayDown = '';
+                    displayDown.textContent = nuovoDisplayDown;
+                }
+                primo = '';
+                function updateDisplay() {
+                    nuovoDisplayUp += contenutoTasto;
+                    console.log(nuovoDisplayUp);
+                    displayUp.textContent = nuovoDisplayUp;}
+                function updateDisplayDown () {
+                    nuovoDisplayDown = risultato;
+                    displayDown.textContent = nuovoDisplayDown;
+                }
+                
+                if (numeri.includes(contenutoTasto)) {              //NUMERI
+                    updateDisplay();
+                }
+                firstChar = nuovoDisplayUp.slice(0, 1);
+                if (lastChar !== '.' && contenutoTasto == '.' && cePunto !== '.' && firstChar !== '.' && firstChar !== '') {
+                    nuovoDisplayUp += contenutoTasto;
+                    console.log(nuovoDisplayUp);
+                    displayUp.textContent = nuovoDisplayUp;
+                    cePunto = '.';
+                }
+                
+                if (contenutoTasto == '⌫') {
+                    nuovoDisplayUp = nuovoDisplayUp.slice(0, nuovoDisplayUp.length - 1);
+                    console.log(nuovoDisplayUp);
+                    displayUp.textContent = nuovoDisplayUp;
+                }
+                if (nuovoDisplayUp == '') {
+                        primo = '+';
+                    }
+
+                primoNumero = nuovoDisplayUp.substring(0, indiceOperatore);             //primo numero
+                primoNumero = Number(primoNumero);
+                console.log(`il primo numero è : ${primoNumero} ed è di tipo: ${typeof(primoNumero)}`);
+
+                secondoNumero = nuovoDisplayUp.substring(indiceOperatore + 1, nuovoDisplayUp.length);   //secondo numero
+                secondoNumero = Number(secondoNumero);
+                if (primoNumero == secondoNumero && operatore == '') {
+                    secondoNumero = 'indefinito'
+                }
+                console.log(`il secondo numero è : ${secondoNumero} ed è di tipo: ${typeof(secondoNumero)}`);
+                function calcola() {
+                    lastChar = nuovoDisplayUp.slice(-1);
+                    firstChar = nuovoDisplayUp.slice(0, 1);     //'+', '×', '−', '÷'
+                    switch (operatore) {
+                        case '−':
+                            risultato = primoNumero - secondoNumero;
+                            break;
+                        case '+':
+                            risultato = primoNumero + secondoNumero;
+                            break;
+                        case '×':
+                            risultato = primoNumero * secondoNumero;
+                            break;
+                        case '÷':
+                            risultato = primoNumero / secondoNumero;
+                            break;
+                    }
+                    if (contenutoTasto == '=') {
+                        updateDisplayDown();
+                    }
+                    console.log('il risultato è:');
+                    console.log(risultato);
+                }
+                calcola()
+                arrayDisplayUp = nuovoDisplayUp.split('');                
+                });
+
+        })
+    </script>
+</body>
+</html>
